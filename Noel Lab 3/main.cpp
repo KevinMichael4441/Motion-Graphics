@@ -18,6 +18,90 @@
 #include <SFML/Graphics.hpp>
 #include <iostream>
 #include <time.h> 
+
+
+
+class Particle
+{
+public:
+	int timetoLive;
+	sf::Vector2f velocity;
+	sf::RectangleShape shape;
+
+	void Draw(sf::RenderWindow& win)
+	{
+		if (timetoLive > 0)
+		{
+			win.draw(shape);
+		}
+	}
+	void Update()
+	{
+		if (timetoLive > 0)
+		{
+			shape.move(velocity);
+
+			timetoLive--;
+		}
+	}
+
+	Particle() {}
+
+	Particle(sf::Vector2f pos, sf::Vector2f vel)
+	{
+		shape.setSize(sf::Vector2f(3, 3));
+		shape.setPosition(pos);
+		shape.setFillColor(sf::Color::Yellow);
+
+		velocity = vel;
+		//timetoLive = 200;
+		timetoLive = rand() % 30;
+
+	}
+};
+
+
+#define maxParticles 50
+class ParticleSystem
+{
+public:
+
+	Particle particles[maxParticles];
+	sf::Vector2f position;
+	void Initialise(sf::Vector2f pos)
+	{
+		position = pos;
+		for (int i = 0; i < maxParticles; i++)
+		{
+			particles[i] = Particle(position, sf::Vector2f(rand() / double(RAND_MAX) * 4 - 2, rand() / double(RAND_MAX) * 4 - 2));
+		}
+	}
+	void Update()
+	{
+		for (int i = 0; i < maxParticles; i++)
+		{
+
+			particles[i].Update();
+
+
+		}
+	}
+	void Draw(sf::RenderWindow& win)
+	{
+		for (int i = 0; i < maxParticles; i++)
+		{
+			particles[i].Draw(win);
+		}
+	}
+
+	ParticleSystem() {}
+};
+
+
+
+
+
+
 class Game
 {
 public:
@@ -64,6 +148,9 @@ public:
 	};
 
 	sf::RectangleShape level[numRows][numCols];
+
+
+	ParticleSystem particleSystem;
 
 	Game()
 	{
@@ -266,6 +353,7 @@ public:
 							if (playerShape.getGlobalBounds().findIntersection(level[row][col].getGlobalBounds()))
 							{
 								velocityY = -11.8;
+								particleSystem.Initialise(playerShape.getPosition());
 							}
 						}
 
@@ -281,6 +369,8 @@ public:
 						
 					}
 				}
+
+				particleSystem.Update();
 
 				if (playerShape.getPosition().y > 600)
 				{
@@ -299,6 +389,7 @@ public:
 				}
 				window.draw(playerShape);
 
+				particleSystem.Draw(window);
 
 				window.display();
 
