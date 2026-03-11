@@ -32,8 +32,10 @@ public:
 
 	float velocityX = 0, velocityY = 0, gravity = 0.3;
 
-
-
+	float horizontalSpeed = -3.7;
+	const float speedDelay = 2.0f;
+	float speedTimer = 0.0f;
+	bool speedTimerActive = false;
 
 	static const int numRows = 20;
 	static const int numCols = 45;
@@ -57,7 +59,7 @@ public:
 	{0,0,0,0,0,0,0,0,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,3,3},
 	{0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,3,3},
 	{0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,3,3},
-	{0,0,0,0,0,1,0,2,0,2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,3,3},
+	{0,0,0,0,5,1,0,2,0,2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,3,3},
 	{1,1,1,1,4,1,1,2,1,1,1,0,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,3,3}
 	};
 
@@ -118,6 +120,15 @@ public:
 					level[row][col].setFillColor(sf::Color::Yellow);
 
 				}
+
+				if (levelData[row][col] == 5)
+				{
+					level[row][col].setSize(sf::Vector2f(70, 30));
+					level[row][col].setPosition(sf::Vector2f(col * 70, row * 30));
+
+					level[row][col].setFillColor(sf::Color::Red);
+
+				}
 			}
 			std::cout << std::endl;
 		}
@@ -134,12 +145,10 @@ public:
 
 
 		sf::Clock clock;
-
 		clock.restart();
 
 		while (window.isOpen())
 		{
-
 
 			// check if the close window button is clicked on. 
 			while (const std::optional event = window.pollEvent())
@@ -166,7 +175,7 @@ public:
 					for (int col = 0; col < numCols; col++)
 					{
 
-						level[row][col].move(sf::Vector2f(-3.7, 0));
+						level[row][col].move(sf::Vector2f(horizontalSpeed, 0));
 					}
 
 				}
@@ -182,6 +191,21 @@ public:
 
 
 				gravity = 0.6;
+
+
+				if (speedTimerActive)
+				{
+					speedTimer += timeSinceLastUpdate.asSeconds();
+					std::cout << speedTimer << "\n";
+
+					if (speedTimer > speedDelay)
+					{
+						speedTimer = 0;
+						speedTimerActive = false;
+						horizontalSpeed = -3.7;
+					}
+				}
+
 
 				for (int row = 0; row < numRows; row++)
 				{
@@ -242,6 +266,15 @@ public:
 							if (playerShape.getGlobalBounds().findIntersection(level[row][col].getGlobalBounds()))
 							{
 								velocityY = -11.8;
+							}
+						}
+
+						if (levelData[row][col] == 5)
+						{
+							if (playerShape.getGlobalBounds().findIntersection(level[row][col].getGlobalBounds()))
+							{
+								speedTimerActive = true;
+								horizontalSpeed = -2.0;
 							}
 						}
 
