@@ -58,7 +58,7 @@ public:
 	{0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,3,3},
 	{0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,3,3},
 	{0,0,0,0,0,1,0,2,0,2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,3,3},
-	{1,1,1,1,1,1,1,2,1,1,1,0,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,3,3}
+	{1,1,1,1,4,1,1,2,1,1,1,0,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,3,3}
 	};
 
 	sf::RectangleShape level[numRows][numCols];
@@ -85,7 +85,7 @@ public:
 
 					level[row][col].setSize(sf::Vector2f(70, 30));
 					level[row][col].setPosition(sf::Vector2f(col * 70, row * 30));
-					level[row][col].setFillColor(sf::Color::Red);
+					level[row][col].setFillColor(sf::Color::Green);
 				}
 				if (levelData[row][col] == 0)
 				{
@@ -108,6 +108,14 @@ public:
 					level[row][col].setPosition(sf::Vector2f(col * 70, row * 30));
 
 					level[row][col].setFillColor(sf::Color::Magenta);
+
+				}
+				if (levelData[row][col] == 4)
+				{
+					level[row][col].setSize(sf::Vector2f(70, 30));
+					level[row][col].setPosition(sf::Vector2f(col * 70, row * 30));
+
+					level[row][col].setFillColor(sf::Color::Yellow);
 
 				}
 			}
@@ -229,6 +237,15 @@ public:
 								window.close();
 							}
 						}
+						if (levelData[row][col] == 4)
+						{
+							if (playerShape.getGlobalBounds().findIntersection(level[row][col].getGlobalBounds()))
+							{
+								velocityY = -11.8;
+							}
+						}
+
+						
 					}
 				}
 
