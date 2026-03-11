@@ -47,18 +47,18 @@ public:
 
 	Particle() {}
 
-	Particle(sf::Vector2f pos, sf::Vector2f vel)
+	Particle(sf::Vector2f pos, sf::Vector2f vel, sf::Color t_color)
 	{
 		shape.setSize(sf::Vector2f(3, 3));
 		shape.setPosition(pos);
-		shape.setFillColor(sf::Color::Yellow);
-
+		shape.setFillColor(t_color);
 		velocity = vel;
-		//timetoLive = 200;
-		timetoLive = rand() % 30;
-
+		timetoLive = rand() % 50;
 	}
 };
+
+
+enum class ParticleType {JUMP, SPEED};
 
 
 #define maxParticles 50
@@ -68,13 +68,25 @@ public:
 
 	Particle particles[maxParticles];
 	sf::Vector2f position;
-	void Initialise(sf::Vector2f pos)
+	void Initialise(sf::Vector2f pos, ParticleType t_type)
 	{
 		position = pos;
-		for (int i = 0; i < maxParticles; i++)
+
+		if (t_type == ParticleType::JUMP)
 		{
-			particles[i] = Particle(position, sf::Vector2f(rand() / double(RAND_MAX) * 4 - 2, rand() / double(RAND_MAX) * 4 - 2));
+			for (int i = 0; i < maxParticles; i++)
+			{
+				particles[i] = Particle(position, sf::Vector2f(rand() / double(RAND_MAX) * 4 - 2, rand() / double(RAND_MAX) * 4 - 2), sf::Color::Yellow);
+			}
 		}
+		else if (t_type == ParticleType::SPEED)
+		{
+			for (int i = 0; i < maxParticles; i++)
+			{
+				particles[i] = Particle(position, sf::Vector2f(rand() / double(RAND_MAX) * 4 - 2, rand() / double(RAND_MAX) * 4 - 2), sf::Color::White);
+			}
+		}
+
 	}
 	void Update()
 	{
@@ -290,6 +302,7 @@ public:
 						speedTimer = 0;
 						speedTimerActive = false;
 						horizontalSpeed = -3.7;
+						particleSystem.Initialise(playerShape.getPosition(), ParticleType::SPEED);
 					}
 				}
 
@@ -353,7 +366,7 @@ public:
 							if (playerShape.getGlobalBounds().findIntersection(level[row][col].getGlobalBounds()))
 							{
 								velocityY = -11.8;
-								particleSystem.Initialise(playerShape.getPosition());
+								particleSystem.Initialise(playerShape.getPosition(), ParticleType::JUMP);
 							}
 						}
 
