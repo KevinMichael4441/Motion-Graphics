@@ -68,6 +68,7 @@ public:
 
 	Particle particles[maxParticles];
 	sf::Vector2f position;
+	
 	void Initialise(sf::Vector2f pos, ParticleType t_type)
 	{
 		position = pos;
@@ -88,6 +89,7 @@ public:
 		}
 
 	}
+	
 	void Update()
 	{
 		for (int i = 0; i < maxParticles; i++)
@@ -98,11 +100,20 @@ public:
 
 		}
 	}
+	
 	void Draw(sf::RenderWindow& win)
 	{
 		for (int i = 0; i < maxParticles; i++)
 		{
 			particles[i].Draw(win);
+		}
+	}
+
+	void reset()
+	{
+		for (int i = 0; i < maxParticles; i++)
+		{
+			particles[i].timetoLive = 0;
 		}
 	}
 
@@ -133,6 +144,10 @@ public:
 	float speedTimer = 0.0f;
 	bool speedTimerActive = false;
 
+	float lavaTimer = 0.0f;
+	float lavaDelay = 0.2;
+	bool lavaGoLeft = 0;
+
 	static const int numRows = 20;
 	static const int numCols = 45;
 	int levelData[numRows][numCols] =
@@ -145,7 +160,7 @@ public:
 	{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,1,0,0,1,0,0,1,0,0,0,0,0,0,0,0,1,0,0,1},
 	{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
 	{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,0,0,1,0,0,0,0,0,0,0,0,0,1,0,0,0,0,1,0,0},
-	{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,1,0,0,0,0,0,0,1,0,0,1,0,0,0,0,1,0,0},
+	{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,6,0,0,0,0,1,0,0,0,0,0,0,1,0,0,1,0,0,0,0,1,0,0},
 	{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,1,0,0,0,0,1,0,0},
 	{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,1,0,0,0,0,1,0,0},
 	{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0},
@@ -171,6 +186,13 @@ public:
 	}
 	void init()
 	{
+
+		particleSystem.reset();
+		speedTimer = 0.0f;
+		lavaTimer = 0.0f;
+
+		speedTimerActive = false;
+		horizontalSpeed = -3.7;
 
 		view = window.getDefaultView();
 		playerShape.setSize(sf::Vector2f(20, 20));
