@@ -147,6 +147,7 @@ public:
 	float lavaTimer = 0.0f;
 	float lavaDelay = 0.2;
 	bool lavaGoLeft = 0;
+	float lavaSpeed = horizontalSpeed * 2;
 
 	static const int numRows = 20;
 	static const int numCols = 45;
@@ -247,9 +248,20 @@ public:
 					level[row][col].setSize(sf::Vector2f(70, 30));
 					level[row][col].setPosition(sf::Vector2f(col * 70, row * 30));
 
+					level[row][col].setFillColor(sf::Color::Cyan);
+
+				}
+
+				if (levelData[row][col] == 6)
+				{
+					level[row][col].setSize(sf::Vector2f(70, 30));
+					level[row][col].setPosition(sf::Vector2f(col * 70, row * 30));
+
 					level[row][col].setFillColor(sf::Color::Red);
 
 				}
+
+
 			}
 			std::cout << std::endl;
 		}
@@ -333,6 +345,62 @@ public:
 				{
 					for (int col = 0; col < numCols; col++)
 					{
+						if (levelData[row][col] == 6)
+						{
+							sf::RectangleShape *toCollideWith = &level[row][col];
+							level[row][col].move({ lavaSpeed, 0 });
+							if (lavaSpeed < 0)
+							{
+								if (col != 0)
+								{	
+									for (int index = col; index > 0; index--)
+									{
+										if (levelData[row][index] == 1)
+										{
+											toCollideWith = &level[row][index];
+											break;
+										}
+									}
+									
+									if (level[row][col].getGlobalBounds().findIntersection(toCollideWith->getGlobalBounds()))
+									{
+										lavaSpeed *= -1;
+									}
+									
+
+								}
+								else if (col == 0)
+								{
+									lavaSpeed *= -1;
+								}								
+							}
+							else
+							{
+								if (col != numCols)
+								{
+									for (int index = col; index < numCols; index++)
+									{
+										if (levelData[row][index] == 1)
+										{
+											toCollideWith = &level[row][index];
+											break;
+										}
+									}
+
+									if (level[row][col].getGlobalBounds().findIntersection(toCollideWith->getGlobalBounds()))
+									{
+										lavaSpeed *= -1;
+									}
+								}
+								else if (col == numCols)
+								{
+									lavaSpeed *= -1;
+								}
+							}
+							
+						}
+
+
 						if (velocityY >= 0)
 						{
 							if (levelData[row][col] == 1)
@@ -401,6 +469,14 @@ public:
 							}
 						}
 
+						if (levelData[row][col] == 6)
+						{
+							if (playerShape.getGlobalBounds().findIntersection(level[row][col].getGlobalBounds()))
+							{
+								init();
+							}
+						}
+
 						
 					}
 				}
@@ -419,7 +495,15 @@ public:
 					for (int col = 0; col < numCols; col++)
 					{
 						window.draw(level[row][col]);
+					}
+				}
 
+				for (int row = 0; row < numRows; row++)
+				{
+					for (int col = 0; col < numCols; col++)
+					{
+						if (levelData[row][col] == 6)
+						window.draw(level[row][col]);
 					}
 				}
 				window.draw(playerShape);
