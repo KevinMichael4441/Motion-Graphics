@@ -142,6 +142,11 @@ public:
 
 	sf::RectangleShape playerShape;
 
+	sf::Texture wallTexture{ "ASSETS/IMAGES/wall.png" };
+	sf::Sprite wallSprite{ wallTexture };
+
+
+
 
 	float velocityX = 0, velocityY = 0, gravity = 0.3;
 
@@ -508,6 +513,13 @@ public:
 					for (int col = 0; col < numCols; col++)
 					{
 						window.draw(level[row][col]);
+						if (levelData[row][col] == 1)
+						{
+							wallSprite.setPosition(level[row][col].getPosition());
+							window.draw(wallSprite);
+						}
+
+						
 					}
 				}
 
@@ -519,6 +531,9 @@ public:
 						window.draw(level[row][col]);
 					}
 				}
+
+
+				
 				window.draw(playerShape);
 
 				particleSystem.Draw(window);
