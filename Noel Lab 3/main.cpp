@@ -123,7 +123,7 @@ public:
 
 
 
-
+static const int MAX_LAVA = 2;
 
 class Game
 {
@@ -144,10 +144,7 @@ public:
 	float speedTimer = 0.0f;
 	bool speedTimerActive = false;
 
-	float lavaTimer = 0.0f;
-	float lavaDelay = 0.2;
-	bool lavaGoLeft = 0;
-	float lavaSpeed = horizontalSpeed * 2;
+	float lavaSpeeds[MAX_LAVA];
 
 	static const int numRows = 20;
 	static const int numCols = 45;
@@ -169,7 +166,7 @@ public:
 	{0,0,0,0,0,0,0,0,0,0,2,0,0,0,1,0,0,0,0,1,0,1,0,0,0,1,1,1,0,0,0,0,0,0,1,0,1,0,0,0,1,1,1,0,0},
 	{0,0,0,0,0,0,0,0,0,0,2,0,0,0,0,0,0,0,0,1,0,0,0,0,0,1,0,0,0,0,0,0,0,0,1,0,0,0,0,0,1,0,0,3,3},
 	{0,0,0,0,0,0,0,0,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,3,3},
-	{0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,3,3},
+	{0,0,0,0,0,0,0,1,0,0,0,0,0,6,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,3,3},
 	{0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,3,3},
 	{0,0,0,0,5,1,0,2,0,2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,3,3},
 	{1,1,1,1,4,1,1,2,1,1,1,0,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,3,3}
@@ -190,7 +187,12 @@ public:
 
 		particleSystem.reset();
 		speedTimer = 0.0f;
-		lavaTimer = 0.0f;
+		
+
+		for (int index = 0; index < MAX_LAVA; index++)
+		{
+			lavaSpeeds[index] = horizontalSpeed * 2;
+		}
 
 		speedTimerActive = false;
 		horizontalSpeed = -3.7;
@@ -340,7 +342,7 @@ public:
 					}
 				}
 
-
+				int lavaIndex = 0;
 				for (int row = 0; row < numRows; row++)
 				{
 					for (int col = 0; col < numCols; col++)
@@ -348,8 +350,8 @@ public:
 						if (levelData[row][col] == 6)
 						{
 							sf::RectangleShape *toCollideWith = &level[row][col];
-							level[row][col].move({ lavaSpeed, 0 });
-							if (lavaSpeed < 0)
+							level[row][col].move({ lavaSpeeds[lavaIndex], 0});
+							if (lavaSpeeds[lavaIndex] < 0)
 							{
 								if (col != 0)
 								{	
@@ -364,14 +366,14 @@ public:
 									
 									if (level[row][col].getGlobalBounds().findIntersection(toCollideWith->getGlobalBounds()))
 									{
-										lavaSpeed *= -1;
+										lavaSpeeds[lavaIndex] *= -1;
 									}
 									
 
 								}
 								else if (col == 0)
 								{
-									lavaSpeed *= -1;
+									lavaSpeeds[lavaIndex] *= -1;
 								}								
 							}
 							else
@@ -389,15 +391,16 @@ public:
 
 									if (level[row][col].getGlobalBounds().findIntersection(toCollideWith->getGlobalBounds()))
 									{
-										lavaSpeed *= -1;
+										lavaSpeeds[lavaIndex] *= -1;
 									}
 								}
 								else if (col == numCols)
 								{
-									lavaSpeed *= -1;
+									lavaSpeeds[lavaIndex] *= -1;
 								}
 							}
 							
+							lavaIndex++;
 						}
 
 
