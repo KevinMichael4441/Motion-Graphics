@@ -16,6 +16,7 @@
 #endif 
 
 #include <SFML/Graphics.hpp>
+#include <SFML/Audio.hpp>
 #include <iostream>
 #include <time.h> 
 
@@ -134,6 +135,11 @@ public:
 	float randomNum;
 
 
+	sf::Music m_music;
+
+	sf::SoundBuffer m_jumpBuffer{"ASSETS/AUDIO/jump.wav"};
+	sf::Sound m_jump{ m_jumpBuffer };
+
 	sf::RectangleShape playerShape;
 
 
@@ -184,7 +190,6 @@ public:
 	}
 	void init()
 	{
-
 		particleSystem.reset();
 		speedTimer = 0.0f;
 		horizontalSpeed = -3.7;
@@ -266,13 +271,15 @@ public:
 
 
 			}
-			std::cout << std::endl;
 		}
 
 	}
 	void run()
 	{
-
+		m_music.openFromFile("ASSETS/AUDIO/music.wav");
+		m_music.setLooping(true);
+		m_music.play();
+		
 
 		sf::Time timePerFrame = sf::seconds(1.0f / 60.0f);
 
@@ -320,6 +327,7 @@ public:
 				if (sf::Keyboard::isKeyPressed(sf::Keyboard::Scan::Space) && velocityY == 0)
 				{
 					velocityY = -11.8;
+					m_jump.play();
 				}
 
 				velocityY = velocityY + gravity;
@@ -461,6 +469,7 @@ public:
 							{
 								velocityY = -11.8;
 								particleSystem.Initialise(playerShape.getPosition(), ParticleType::JUMP);
+								m_jump.play();
 							}
 						}
 
