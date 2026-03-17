@@ -142,8 +142,33 @@ public:
 
 	sf::RectangleShape playerShape;
 
-	sf::Texture wallTexture{ "ASSETS/IMAGES/wall.png" };
+	// Tile 1
+	sf::Texture wallTexture{ "ASSETS/IMAGES/decidueye.png" };
 	sf::Sprite wallSprite{ wallTexture };
+
+	// Tile 2
+	sf::Texture deathTexture{ "ASSETS/IMAGES/technoblade.png" };
+	sf::Sprite deathSprite{ deathTexture };
+
+	// Tile 3
+	sf::Texture winTexture{ "ASSETS/IMAGES/eurovision.png" };
+	sf::Sprite winSprite{ winTexture };
+
+	// Tile 4
+	sf::Texture jumpTexture{ "ASSETS/IMAGES/valorant.png" };
+	sf::Sprite jumpSprite{ jumpTexture };
+
+	// Tile 5
+	sf::Texture speedTexture{ "ASSETS/IMAGES/tardis.png" };
+	sf::Sprite speedSprite{ speedTexture };
+
+	// Tile 6
+	sf::Texture lavaTexture{ "ASSETS/IMAGES/archery.png" };
+	sf::Sprite lavaSprite{ lavaTexture };
+	
+	// Player
+	sf::Texture playerTexture{ "ASSETS/IMAGES/gdash.png" };
+	sf::Sprite playerSprite{ playerTexture };
 
 
 
@@ -285,6 +310,13 @@ public:
 		m_music.setLooping(true);
 		m_music.play();
 		
+		wallSprite.setScale({ 0.2, 0.2 });
+		jumpSprite.setScale({ 0.2, 0.2 });
+		lavaSprite.setScale({ 0.2, 0.2 });
+		deathSprite.setScale({ 0.2, 0.2 });
+		winSprite.setScale({ 0.2, 0.2 });
+		playerSprite.setScale({ 0.2, 0.2 });
+		speedSprite.setScale({ 0.2, 0.2 });
 
 		sf::Time timePerFrame = sf::seconds(1.0f / 60.0f);
 
@@ -512,14 +544,31 @@ public:
 				{
 					for (int col = 0; col < numCols; col++)
 					{
-						window.draw(level[row][col]);
 						if (levelData[row][col] == 1)
 						{
 							wallSprite.setPosition(level[row][col].getPosition());
 							window.draw(wallSprite);
 						}
-
-						
+						else if (levelData[row][col] == 2)
+						{
+							deathSprite.setPosition(level[row][col].getPosition());
+							window.draw(deathSprite);
+						}
+						else if (levelData[row][col] == 3)
+						{
+							winSprite.setPosition(level[row][col].getPosition());
+							window.draw(winSprite);
+						}
+						else if (levelData[row][col] == 4)
+						{
+							jumpSprite.setPosition(level[row][col].getPosition());
+							window.draw(jumpSprite);
+						}
+						else if (levelData[row][col] == 5)
+						{
+							speedSprite.setPosition(level[row][col].getPosition());
+							window.draw(speedSprite);
+						}
 					}
 				}
 
@@ -528,13 +577,16 @@ public:
 					for (int col = 0; col < numCols; col++)
 					{
 						if (levelData[row][col] == 6)
-						window.draw(level[row][col]);
+						{
+							lavaSprite.setPosition(level[row][col].getPosition());
+							window.draw(lavaSprite);
+						}
 					}
 				}
 
 
-				
-				window.draw(playerShape);
+				playerSprite.setPosition(playerShape.getPosition());
+				window.draw(playerSprite);
 
 				particleSystem.Draw(window);
 
