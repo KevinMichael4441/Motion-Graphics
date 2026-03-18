@@ -170,7 +170,8 @@ public:
 	sf::Texture playerTexture{ "ASSETS/IMAGES/gdash.png" };
 	sf::Sprite playerSprite{ playerTexture };
 
-
+	sf::Texture bgTexture{ "ASSETS/IMAGES/background.png" };
+	sf::Sprite bgSprite{ bgTexture };
 
 
 	float velocityX = 0, velocityY = 0, gravity = 0.3;
@@ -539,6 +540,8 @@ public:
 				}
 
 				window.clear();
+
+				window.draw(bgSprite);
 
 				for (int row = 0; row < numRows; row++)
 				{
